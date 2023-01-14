@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class MergeSort {
-    public void sorting(Settings settings) throws IOException {
+    public void sort(Settings settings) throws IOException {
         ArrayList<String> listFile = settings.getFilesList();
         if(listFile.size() == 2) {
             sortTwoFiles(new File(listFile.get(0)), new File(listFile.get(1)), settings.getTypeSort(), settings.getTypeData());
@@ -54,28 +54,24 @@ public class MergeSort {
         new File(tempFile.getName()).renameTo(new File(file1.getName()));
     }
     private void sortInteger(BufferedReader br1, BufferedReader br2, BufferedWriter writer, TypeSort typeSort) throws IOException {
-        String str1 = br1.readLine();
-        String str2 = br2.readLine();
-        Integer num1 = str1 != null ? Integer.valueOf(str1) : null;
-        Integer num2 = str2 != null ? Integer.valueOf(str2) : null;
-        if(typeSort == TypeSort.ASCENDING) {
-            while (num1 != null && num2 != null) {
-                if (num1 <= num2) num1 = writeLineAndReadNewLine(br1, writer, num1);
-                else num2 = writeLineAndReadNewLine(br2, writer, num2);
+        String lineOne = br1.readLine();
+        String lineTwo = br2.readLine();
+        Integer num1 = lineOne != null ? Integer.valueOf(lineOne) : null;
+        Integer num2 = lineTwo != null ? Integer.valueOf(lineTwo) : null;
+        Integer[] array = {num1, num2};
+        while (array[0] != null && array[1] != null) {
+                compare(array, br1, br2, writer, typeSort == TypeSort.ASCENDING);
             }
-        } else {
-            while (num1 != null && num2 != null) {
-                if (num1 >= num2) num1 = writeLineAndReadNewLine(br1, writer, num1);
-                else num2 = writeLineAndReadNewLine(br2, writer, num2);
-            }
-        }
-        if (num1 == null) copyFileToOutFile(br2, writer, num2);
-        if (num2 == null) copyFileToOutFile(br1, writer, num1);
+        if (array[0] == null) copyFileToOutFile(br2, writer, array[1]);
+        if (array[1] == null) copyFileToOutFile(br1, writer, array[0]);
     }
     private void sortString(BufferedReader br1, BufferedReader br2, BufferedWriter writer, TypeSort typeSort) throws IOException {
         String str1 = br1.readLine();
         String str2 = br2.readLine();
-        int compare = str1.compareTo(str2);
+        int compare = 0;
+        if (str1 != null && str2 != null) {
+            compare = str1.compareTo(str2);
+        }
         if(typeSort == TypeSort.ASCENDING) {
             while (str1 != null && str2 != null){
                 if (compare >= 0) str2 = writeLineAndReadNewLine(br1, writer, str2);
@@ -89,6 +85,15 @@ public class MergeSort {
         }
         if (str2 == null) copyFileToOutFile(br1, writer, str1);
         if (str1 == null) copyFileToOutFile(br2, writer, str2);
+    }
+    private Integer[] compare(Integer[] array, BufferedReader br1, BufferedReader br2, BufferedWriter writer, boolean sign) throws IOException {
+        if ((array[0] <= array[1]) == sign) {
+                array[0] = writeLineAndReadNewLine(br1, writer, array[0]);
+            }
+            else {
+                array[1] = writeLineAndReadNewLine(br2, writer, array[1]);
+            }
+        return array;
     }
     private Integer writeLineAndReadNewLine(BufferedReader br1, BufferedWriter writer, Integer file) throws IOException {
         writer.write(file + "\n");
@@ -108,10 +113,5 @@ public class MergeSort {
         while (!(str == null)){
             str = writeLineAndReadNewLine(br, writer, str);
         }
-    }
-    private void reNameOutFile(File file1, File fileOut) {
-        String name = file1.getName();
-        new File(name).delete();
-        new File(fileOut.getName()).renameTo(new File(name));
     }
 }

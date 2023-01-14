@@ -9,9 +9,9 @@ public class Parser {
     private ArrayList<String> filesList = new ArrayList<>();
 
 
-    public Settings parsingArgs(String[] args) {
+    public Settings parseArgs(String[] args) {
         try {
-            if (args.length > 3) {
+            if (args.length >= 3) {
                 for (String arg : args) {
                     switch (arg) {
                         case ("-d"):
