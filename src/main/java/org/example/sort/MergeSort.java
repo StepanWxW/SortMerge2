@@ -19,17 +19,12 @@ public class MergeSort {
             }
         }
     }
-
     private File sortTwoFiles(File file1, File file2, TypeSort typeSort, TypeData typeData, File file) throws IOException {
         if(!file.exists()) file1.createNewFile();
         try (BufferedReader br1 = new BufferedReader(new FileReader(file1));
              BufferedReader br2 = new BufferedReader(new FileReader(file2));
              BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            if(typeData == TypeData.STRING){
-                sortString(br1, br2, writer, typeSort);
-            } else {
-                sortInteger(br1, br2, writer, typeSort);
-            }
+            sort(br1,br2,writer,typeSort,typeData);
         } catch (IOException e) {
             System.out.println("Problem with sort files");
         }
@@ -42,57 +37,50 @@ public class MergeSort {
         try (BufferedReader br1 = new BufferedReader(new FileReader(file1));
              BufferedReader br2 = new BufferedReader(new FileReader(file2));
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-            if(typeData == TypeData.STRING){
-                sortString(br1, br2, writer, typeSort);
-            } else {
-                sortInteger(br1, br2, writer, typeSort);
-            }
+            sort(br1,br2,writer,typeSort,typeData);
         } catch (IOException e) {
             System.out.println("Problem with sort files");
         }
         file1.delete();
         new File(tempFile.getName()).renameTo(new File(file1.getName()));
     }
-    private void sortInteger(BufferedReader br1, BufferedReader br2, BufferedWriter writer, TypeSort typeSort) throws IOException {
+    private void sort(BufferedReader br1, BufferedReader br2, BufferedWriter writer, TypeSort typeSort, TypeData typeData) throws IOException {
         String lineOne = br1.readLine();
         String lineTwo = br2.readLine();
-        Integer num1 = lineOne != null ? Integer.valueOf(lineOne) : null;
-        Integer num2 = lineTwo != null ? Integer.valueOf(lineTwo) : null;
-        Integer[] array = {num1, num2};
-        while (array[0] != null && array[1] != null) {
-                compare(array, br1, br2, writer, typeSort == TypeSort.ASCENDING);
+        if(typeData == TypeData.INTEGER) {
+            Integer num1 = lineOne != null ? Integer.valueOf(lineOne) : null;
+            Integer num2 = lineTwo != null ? Integer.valueOf(lineTwo) : null;
+            Integer[] array = {num1, num2};
+            while (array[0] != null && array[1] != null) {
+                compareInteger(array, br1, br2, writer, typeSort == TypeSort.ASCENDING);
             }
-        if (array[0] == null) copyFileToOutFile(br2, writer, array[1]);
-        if (array[1] == null) copyFileToOutFile(br1, writer, array[0]);
-    }
-    private void sortString(BufferedReader br1, BufferedReader br2, BufferedWriter writer, TypeSort typeSort) throws IOException {
-        String str1 = br1.readLine();
-        String str2 = br2.readLine();
-        int compare = 0;
-        if (str1 != null && str2 != null) {
-            compare = str1.compareTo(str2);
-        }
-        if(typeSort == TypeSort.ASCENDING) {
-            while (str1 != null && str2 != null){
-                if (compare >= 0) str2 = writeLineAndReadNewLine(br1, writer, str2);
-                else str1 = writeLineAndReadNewLine(br1, writer, str1);
-            }
+            if (array[0] == null) copyFileToOutFile(br2, writer, array[1]);
+            if (array[1] == null) copyFileToOutFile(br1, writer, array[0]);
         } else {
-            while (str1 != null && str2 != null) {
-                if (compare <= 0) str2 = writeLineAndReadNewLine(br1, writer, str2);
-                else str1 = writeLineAndReadNewLine(br1, writer, str1);
+            String[] array = {lineOne, lineTwo};
+            while (array[0] != null && array[1] != null){
+                 compareString(array, br1, br2, writer, typeSort == TypeSort.ASCENDING);
             }
+            if (array[0] == null) copyFileToOutFile(br2, writer, array[1]);
+            if (array[1] == null) copyFileToOutFile(br1, writer, array[0]);
         }
-        if (str2 == null) copyFileToOutFile(br1, writer, str1);
-        if (str1 == null) copyFileToOutFile(br2, writer, str2);
     }
-    private Integer[] compare(Integer[] array, BufferedReader br1, BufferedReader br2, BufferedWriter writer, boolean sign) throws IOException {
+    private Integer[] compareInteger(Integer[] array, BufferedReader br1, BufferedReader br2, BufferedWriter writer, boolean sign) throws IOException {
         if ((array[0] <= array[1]) == sign) {
                 array[0] = writeLineAndReadNewLine(br1, writer, array[0]);
             }
             else {
                 array[1] = writeLineAndReadNewLine(br2, writer, array[1]);
             }
+        return array;
+    }
+    private String[] compareString(String[] array, BufferedReader br1, BufferedReader br2, BufferedWriter writer, boolean sign) throws IOException {
+        if ((array[0].compareTo(array[1]) <= 0) == sign) {
+            array[0] = writeLineAndReadNewLine(br1, writer, array[0]);
+        }
+        else {
+            array[1] = writeLineAndReadNewLine(br2, writer, array[1]);
+        }
         return array;
     }
     private Integer writeLineAndReadNewLine(BufferedReader br1, BufferedWriter writer, Integer file) throws IOException {

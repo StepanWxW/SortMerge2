@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
 
         String[] args1 = new String[7];
-        args1[0] = "-i";
+        args1[0] = "-s";
 //        args1[1] = "-a";
         args1[1] = "-d";
         args1[2] = "out.txt";
