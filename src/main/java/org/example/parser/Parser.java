@@ -3,42 +3,30 @@ package org.example.parser;
 
 import java.util.ArrayList;
 
+import static org.example.util.Constants.EXPLANATION_MESSAGE;
+
+
 public class Parser {
     private TypeSort typeSort = TypeSort.ASCENDING;
-    private TypeData typeData = TypeData.NOT_INSTALLED;
-    private ArrayList<String> filesList = new ArrayList<>();
+    private TypeData typeData;
+    private final ArrayList<String> filesList = new ArrayList<>();
 
+    public Settings parsingArgs(String[] args) {
 
-    public Settings parseArgs(String[] args) {
-        try {
-            if (args.length >= 3) {
-                for (String arg : args) {
-                    switch (arg) {
-                        case ("-d"):
-                            typeSort = TypeSort.DESCENDING;
-                            break;
-                        case ("-a"):
-                            typeSort = TypeSort.ASCENDING;
-                            break;
-                        case ("-i"):
-                            typeData = TypeData.INTEGER;
-                            break;
-                        case ("-s"):
-                            typeData = TypeData.STRING;
-                            break;
-                        default:
-                            filesList.add(arg);
-                            break;
-                    }
+        if (args.length >= 3) {
+            for (String arg : args) {
+                switch (arg) {
+                    case ("-a") -> typeSort = TypeSort.ASCENDING;
+                    case ("-d") -> typeSort = TypeSort.DESCENDING;
+                    case ("-i") -> typeData = TypeData.INTEGER;
+                    case ("-s") -> typeData = TypeData.STRING;
+                    default -> filesList.add(arg);
                 }
-            } else if (typeData == TypeData.NOT_INSTALLED) {
-                Helper.help();
-            } else {
-                Helper.help();
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            Helper.help();
+        } else {
+            System.out.println("Вы не указали мало параметров\n" + "Подсказка: \n" +EXPLANATION_MESSAGE);
+        } if(typeData == null) {
+            System.out.println("Вы не указали тип данных: -i или -n \n" + "Подсказка: \n" +EXPLANATION_MESSAGE);
         }
         return new Settings(typeSort, typeData, filesList);
     }
