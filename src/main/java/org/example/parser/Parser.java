@@ -10,9 +10,7 @@ public class Parser {
     private TypeSort typeSort = TypeSort.ASCENDING;
     private TypeData typeData;
     private final ArrayList<String> filesList = new ArrayList<>();
-
     public Settings parsingArgs(String[] args) {
-
         if (args.length >= 3) {
             for (String arg : args) {
                 switch (arg) {

@@ -37,7 +37,8 @@ public class StringSortAndMerger implements SortMerger<String> {
         }
         return str;
     }
-    public String readNewLineAndCheck(BufferedReader br){
+
+    public String readNewLineAndCheck(BufferedReader br) {
         String line = null;
         boolean flag = true;
         while (flag) {
@@ -49,7 +50,7 @@ public class StringSortAndMerger implements SortMerger<String> {
                     if (line.contains(" ")) {
                         System.out.println("Данная строка содержит пробел: " + line
                                 + " она будет утеряна. Программа завершит работу корректно");
-                    }else {
+                    } else {
                         flag = false;
                     }
                 }
@@ -59,6 +60,7 @@ public class StringSortAndMerger implements SortMerger<String> {
         }
         return line;
     }
+
     @Override
     public void copyFileToOutFile(BufferedReader br, BufferedWriter writer, String str) {
         while (!(str == null)) {
